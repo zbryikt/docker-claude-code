@@ -4,7 +4,8 @@
   "description": "run claude code in docker.",
   "main": "index.js",
   "bin": {
-    "docker-claude-code": "./run.sh"
+    "docker-claude-code": "./run.sh",
+    "dcc": "./run.sh"
   },
   "scripts": {},
   "repository": {
