@@ -24,8 +24,8 @@ while [[ $# -gt 0 ]]; do
   esac
 done
 
-# 產生 container 名稱，例如 claude-myproject-default
-BASENAME=$(basename "$PWD")
+# 產生 container 名稱，使用路徑哈希避免同名目錄衝突
+BASENAME=$(echo "$PWD" | md5sum | cut -d' ' -f1 | cut -c1-16)
 NAME="claude-${BASENAME}-${PROFILE}"
 IMAGE=claude-code-cli
 
