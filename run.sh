@@ -30,8 +30,8 @@ NAME="claude-${BASENAME}-${PROFILE}"
 IMAGE=claude-code-cli
 
 # Claude Code session 掛載路徑
-ROOT_HOME="$HOME/.claude-code/profiles/${PROFILE}"
-mkdir -p "$ROOT_HOME"
+USER_HOME="$HOME/.claude-code/profiles/${PROFILE}"
+mkdir -p "$USER_HOME"
 
 # 移除舊 container（如果指定了 --reset）
 if [[ $RESET -eq 1 ]]; then
@@ -46,7 +46,8 @@ if docker ps -a --format '{{.Names}}' | grep -q "^${NAME}$"; then
 else
   echo "Creating new container '${NAME}'..."
   docker run -it --name "$NAME" \
-    -v "$ROOT_HOME:/root" \
+    -v "$USER_HOME:/home/user" \
+    -v "$USER_HOME:/root" \
     -v "$PWD:/workspace" \
     -w /workspace \
     "$IMAGE"
