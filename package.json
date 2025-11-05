@@ -7,7 +7,9 @@
     "docker-claude-code": "./run.sh",
     "dcc": "./run.sh"
   },
-  "scripts": {},
+  "scripts": {
+    "build": "docker build -t claude-code-cli ."
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/zbryikt/docker-claude-code.git"

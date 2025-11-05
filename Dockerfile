@@ -1,7 +1,27 @@
 FROM node:18-slim
 
-# 安裝 ripgrep、git 和 sudo
-RUN apt-get update && apt-get install -y ripgrep git sudo && apt-get clean
+# 安裝 ripgrep、git、sudo 和 pyenv 所需的依賴
+RUN apt-get update && apt-get install -y \
+    procps \
+    ripgrep \
+    git \
+    sudo \
+    build-essential \
+    libssl-dev \
+    zlib1g-dev \
+    libbz2-dev \
+    libreadline-dev \
+    libsqlite3-dev \
+    wget \
+    curl \
+    llvm \
+    libncurses5-dev \
+    libncursesw5-dev \
+    xz-utils \
+    tk-dev \
+    libffi-dev \
+    liblzma-dev \
+    && apt-get clean
 
 # 安裝 Claude Code CLI
 RUN npm install -g @anthropic-ai/claude-code
@@ -18,6 +38,23 @@ RUN chown user:user /workspace
 
 # 切換到 user 帳號
 USER user
+
+# 安裝 pyenv
+RUN curl https://pyenv.run | bash
+
+# 設定 pyenv 環境變數
+ENV PYENV_ROOT="/home/user/.pyenv"
+ENV PATH="$PYENV_ROOT/bin:$PYENV_ROOT/shims:$PATH"
+
+# 安裝 Python 3.11 並設為全局版本
+RUN eval "$(pyenv init -)" && \
+    pyenv install 3.11 && \
+    pyenv global 3.11
+
+# 將 pyenv 初始化加入 .bashrc
+RUN echo 'export PYENV_ROOT="$HOME/.pyenv"' >> ~/.bashrc && \
+    echo 'export PATH="$PYENV_ROOT/bin:$PATH"' >> ~/.bashrc && \
+    echo 'eval "$(pyenv init -)"' >> ~/.bashrc
 
 # 預設啟動 claude，退出後進入 bash
 CMD ["bash", "-c", "claude --dangerously-skip-permissions; exec bash"]
