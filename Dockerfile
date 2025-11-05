@@ -1,9 +1,9 @@
 FROM node:18-slim
 
-# 安裝 ripgrep（選用，但 Claude 建議裝）
-RUN apt-get update && apt-get install -y ripgrep sudo && apt-get clean
+# 安裝 ripgrep、git 和 sudo
+RUN apt-get update && apt-get install -y ripgrep git sudo && apt-get clean
 
-# 安裝 Claude Code CLI（建議避免 sudo）
+# 安裝 Claude Code CLI
 RUN npm install -g @anthropic-ai/claude-code
 
 # 建立 user 帳號
