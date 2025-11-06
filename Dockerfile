@@ -57,8 +57,7 @@ RUN echo 'export PYENV_ROOT="$HOME/.pyenv"' >> ~/.bashrc && \
     echo 'eval "$(pyenv init -)"' >> ~/.bashrc
 
 # 複製並設定啟動腳本
-COPY entrypoint.sh /usr/local/bin/entrypoint.sh
-RUN chmod +x /usr/local/bin/entrypoint.sh
+COPY --chmod=755 entrypoint.sh /usr/local/bin/entrypoint.sh
 
 # 使用啟動腳本
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]

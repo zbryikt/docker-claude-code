@@ -18,4 +18,8 @@ echo ""
 
 # 執行指定的 CLI，退出後進入 bash
 eval "$CLI_CMD" || true
+
+# 確保回到一個存在的目錄
+cd /workspace 2>/dev/null || cd ~ 2>/dev/null || cd /
+
 exec bash
