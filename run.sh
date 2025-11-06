@@ -60,19 +60,29 @@ fi
 
 # 判斷 container 是否存在
 if docker ps -a --format '{{.Names}}' | grep -q "^${NAME}$"; then
-  echo "Container '${NAME}' already exists. Attaching..."
-  echo "Starting with ${CLI}..."
-  docker start -ai "$NAME"
-else
-  echo "Creating new container '${NAME}'..."
-  echo "Will start with ${CLI}..."
-  docker run -it --name "$NAME" \
-    -v "$PROFILE_DIR:/home/user" \
-    -v "$PROFILE_DIR:/root" \
-    -v "$PWD:/workspace" \
-    -w /workspace \
-    -e CLI_NAME="$CLI" \
-    -e CLI_CMD="$CLI_CMD" \
-    "$IMAGE"
+  echo "Container '${NAME}' already exists."
+
+  # 檢查容器中的 CLI_NAME 環境變數是否與當前選擇一致
+  CONTAINER_CLI=$(docker inspect --format='{{range .Config.Env}}{{println .}}{{end}}' "$NAME" | grep "^CLI_NAME=" | cut -d'=' -f2)
+
+  if [[ "$CONTAINER_CLI" != "$CLI" ]]; then
+    echo "Detected CLI change: ${CONTAINER_CLI} -> ${CLI}"
+    echo "Recreating container to apply new CLI setting..."
+    docker rm -f "$NAME" 2>/dev/null || true
+  else
+    echo "Attaching to existing container with ${CLI}..."
+    docker start -ai "$NAME"
+    exit 0
+  fi
 fi
+
+echo "Creating new container '${NAME}' with ${CLI}..."
+docker run -it --name "$NAME" \
+  -v "$PROFILE_DIR:/home/user" \
+  -v "$PROFILE_DIR:/root" \
+  -v "$PWD:/workspace" \
+  -w /workspace \
+  -e CLI_NAME="$CLI" \
+  -e CLI_CMD="$CLI_CMD" \
+  "$IMAGE"
 
