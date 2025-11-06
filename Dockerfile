@@ -56,5 +56,9 @@ RUN echo 'export PYENV_ROOT="$HOME/.pyenv"' >> ~/.bashrc && \
     echo 'export PATH="$PYENV_ROOT/bin:$PATH"' >> ~/.bashrc && \
     echo 'eval "$(pyenv init -)"' >> ~/.bashrc
 
-# 預設啟動 claude，退出後進入 bash
-CMD ["bash", "-c", "claude --dangerously-skip-permissions; exec bash"]
+# 複製並設定啟動腳本
+COPY entrypoint.sh /usr/local/bin/entrypoint.sh
+RUN chmod +x /usr/local/bin/entrypoint.sh
+
+# 使用啟動腳本
+ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
