@@ -1,4 +1,4 @@
-FROM node:18-slim
+FROM node:20-slim
 
 # 安裝 ripgrep、git、sudo 和 pyenv 所需的依賴
 RUN apt-get update && apt-get install -y \
