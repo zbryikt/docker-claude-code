@@ -24,7 +24,7 @@ RUN apt-get update && apt-get install -y \
     && apt-get clean
 
 # 安裝 Claude Code CLI
-RUN npm install -g @anthropic-ai/claude-code
+RUN npm install -g @anthropic-ai/claude-code @google/gemini-cli
 
 # 建立 user 帳號
 RUN useradd -m -s /bin/bash user

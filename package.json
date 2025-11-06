@@ -8,7 +8,7 @@
     "dcc": "./run.sh"
   },
   "scripts": {
-    "build": "docker build -t claude-code-cli ."
+    "build": "docker build -t llmcli ."
   },
   "repository": {
     "type": "git",

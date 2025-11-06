@@ -1,11 +1,11 @@
-# docker-claude-code
+# docker-llmcli
 
-run claude code in docker.
+run llm cli in docker.
 
 usage:
 
     # build docker image
-    docker build -t claude-code-cli .
+    docker build -t llmcli .
 
     # enter container
     ./run.sh
