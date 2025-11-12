@@ -67,6 +67,20 @@ fi
 if docker ps -a --format '{{.Names}}' | grep -q "^${NAME}$"; then
   echo "Container '${NAME}' already exists."
 
+  # 檢查是否指定了端口映射參數
+  if [[ ${#PORTS[@]} -gt 0 ]]; then
+    echo ""
+    echo "WARNING: Port mapping (-p) specified but container already exists."
+    echo "Port mappings can only be set when creating a new container."
+    echo "To apply new port mappings, use: $0 --reset -p <ports>"
+    echo ""
+    read -p "Continue without applying port mappings? (y/N): " -n 1 -r
+    echo
+    if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+      exit 1
+    fi
+  fi
+
   # 檢查容器中的 CLI_NAME 環境變數是否與當前選擇一致
   CONTAINER_CLI=$(docker inspect --format='{{range .Config.Env}}{{println .}}{{end}}' "$NAME" | grep "^CLI_NAME=" | cut -d'=' -f2)
 
