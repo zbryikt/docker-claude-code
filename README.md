@@ -19,6 +19,8 @@ run.sh options:
     --cli claude|gemini        choose CLI tool (default: claude)
     --reset                    reset and recreate container
     -p, --port HOST:CONTAINER  map port (can be used multiple times)
+                               note: port mapping won't work over existed container.
+                                     add `--reset` to make it work
 
 examples:
 
