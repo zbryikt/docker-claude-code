@@ -6,6 +6,7 @@ set -e
 PROFILE="default"
 RESET=0
 CLI="claude"  # 預設使用 claude
+PORTS=()  # 儲存端口映射
 
 # 解析參數
 while [[ $# -gt 0 ]]; do
@@ -22,9 +23,13 @@ while [[ $# -gt 0 ]]; do
       CLI="$2"
       shift 2
       ;;
+    -p|--port)
+      PORTS+=("$2")
+      shift 2
+      ;;
     *)
       echo "未知參數: $1"
-      echo "用法: $0 [--profile PROFILE] [--cli claude|gemini] [--reset]"
+      echo "用法: $0 [--profile PROFILE] [--cli claude|gemini] [--reset] [-p|--port HOST:CONTAINER]"
       exit 1
       ;;
   esac
@@ -77,6 +82,13 @@ if docker ps -a --format '{{.Names}}' | grep -q "^${NAME}$"; then
 fi
 
 echo "Creating new container '${NAME}' with ${CLI}..."
+
+# 構建端口映射參數
+PORT_ARGS=()
+for port in "${PORTS[@]}"; do
+  PORT_ARGS+=("-p" "$port")
+done
+
 docker run -it --name "$NAME" \
   -v "$PROFILE_DIR:/home/user" \
   -v "$PROFILE_DIR:/root" \
@@ -84,5 +96,6 @@ docker run -it --name "$NAME" \
   -w /workspace \
   -e CLI_NAME="$CLI" \
   -e CLI_CMD="$CLI_CMD" \
+  "${PORT_ARGS[@]}" \
   "$IMAGE"
 
